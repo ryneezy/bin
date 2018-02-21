@@ -1,0 +1,36 @@
+#!/bin/sh
+
+SCRIPT_NAME=$0
+
+if [ $# -lt 2 ]; then
+  echo "Usage is $SCRIPT_NAME mergedPdf pdf1 pdf2 ... pdfN"
+  exit 1
+fi
+
+command -v gs
+if [ $? -ne 0 ]; then
+  echo "Ghostscript not installed. Please install with \"brew install gs\""
+  exit 1
+fi
+
+MERGED_FILENAME=$1
+shift
+FILES_TO_MERGE=$*
+
+if [ -e $MERGED_FILENAME ]; then
+  echo "$MERGED_FILENAME exits. Aborting."
+  exit 1;
+fi
+
+echo "$FILES_TO_MERGE will be merged into $MERGED_FILENAME"
+read -p "Continue? [yN] " -rn1
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+  gs -q -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -sOutputFile="$MERGED_FILENAME" $FILES_TO_MERGE
+  if [ $? -ne 0 ]; then
+    rm -f "$MERGED_FILENAME"
+  fi
+else
+  echo "Aborting $SCRIPT_NAME"
+  exit 1
+fi
