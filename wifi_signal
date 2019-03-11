@@ -1,0 +1,9 @@
+#!/bin/bash
+
+INTERNET=' '
+
+AIRPORT=$(/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport -I)
+SIGNAL=$(echo "$AIRPORT" | grep agrCtlRSSI | awk '{print $2}' | sed 's/-//g')
+NOISE=$(echo "$AIRPORT" | grep agrCtlNoise| awk '{print $2}' | sed 's/-//g')
+
+echo -n "$INTERNET -[$SIGNAL]db / -[$NOISE]db "

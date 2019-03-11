@@ -1,0 +1,21 @@
+#!/bin/sh
+
+set -e
+
+if [ $# -ne 1 ]; then
+  echo "Usage is $0 [phone number]"
+  exit 1
+fi
+
+if [ -z "$TWILIO_ACCOUNT_SID" ]; then
+  echo "No TWILIO_ACCOUNT_SID environment variable set"
+  exit 1
+fi
+
+if [ -z "$TWILIO_AUTH_TOKEN" ]; then
+  echo "No TWILIO_AUTH_TOKEN environment variable set"
+  exit 1
+fi
+
+PhoneNumber=$1
+curl -sXGET "https://lookups.twilio.com/v1/PhoneNumbers/${PhoneNumber}?Type=carrier&Type=caller-name" -u "${TWILIO_ACCOUNT_SID}:${TWILIO_AUTH_TOKEN}" | jq .
